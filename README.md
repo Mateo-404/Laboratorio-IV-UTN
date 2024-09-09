@@ -1,6 +1,6 @@
 # Laboratorio IV - UTN 🎓
 
-Este repositorio contiene ejercicios realizados de la materia Laboratorio IV de la UTN. Los ejercicios están enfocados en la creación y manipulación de bases de datos con el lenguaje SQL.
+Este repositorio contiene ejercicios realizados de la materia Laboratorio IV de la UTN FRRa. Los ejercicios están enfocados en la creación y manipulación de bases de datos con el lenguaje SQL.
 
 ## Cómo usar este repositorio
 
