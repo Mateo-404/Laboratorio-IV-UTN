@@ -1,4 +1,4 @@
-/* EJERCICIO 1 */
+/* EJERCICIO 1 */ /*
 CREATE TABLE Escuela (
     idEscuela INT PRIMARY KEY,
     domicilio VARCHAR(45),
@@ -48,6 +48,7 @@ CREATE TABLE Reserva_Por_Grado(
 );
 */
 
+*/
 /*EJERCICIO 4*/
 CREATE TABLE Reserva_Tipo_Visita(
 	Cantidad_alumnos_reservado INT,
@@ -55,8 +56,18 @@ CREATE TABLE Reserva_Tipo_Visita(
 	Cantidad_Alumnos_Reales INT
 ); 
 
-/*EJERCICIO 5*/ /*INCOMPLETO*/
+
+/*EJERCICIO 5*/
 ALTER TABLE Reserva_Tipo_Visita ADD Reserva_idReserva INT
-ALTER TABLE Reserva_Tipo_Visita ADD Tipo_visitas_idTipo_visitas INT,
+ALTER TABLE Reserva_Tipo_Visita ADD Tipo_visitas_idTipo_visitas INT
 ALTER TABLE Reserva_Tipo_Visita ADD guia_idguia INT
-	
+ALTER TABLE Reserva_Tipo_Visita ADD PRIMARY KEY(Reserva_idReserva,Tipo_visitas_idTipo_visitas, guia_idguia)
+ALTER TABLE Reserva_Tipo_Visita ADD FOREIGN KEY (guia_idguia) REFERENCES Guia(idguia)
+
+/*EJERCICIO 6*/
+ALTER TABLE Guia ADD sueldo_hora FLOAT
+
+/*EJERCICIO 7*/ /*DA ERROR*/
+/*
+ALTER TABLE Escuela ALTER COLUMN Nombre PRIMARY KEY IDENTITY
+*/
