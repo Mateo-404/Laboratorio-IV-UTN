@@ -41,30 +41,27 @@ DROP INDEX idx_Guia_Nombre_Apellido;
 /*EJERCICIO 11*/
 CREATE UNIQUE INDEX idxx_Guia_Nombre_Apellido ON Guia(nombre, apellido);
 
-/*EJERCICIO 12*/ --! Revisar de acá para abajo
+/*EJERCICIO 12*/
 -- Primero creo el Rol
 CREATE ROLE CORDOBA;
 -- Asigno permisos
-GRANT SELECT ON reserva_visita TO CORDOBA;
+GRANT SELECT ON Reserva_Tipo_Visita TO CORDOBA;
 
 /*EJERCICIO 13*/
--- Crear una vista sin el campo Arancel_por_Alumno
-CREATE VIEW vista_sin_arancel AS SELECT Cantidad_alumnos_reservado, Cantidad_Alumnos_Reales, Reserva_idReserva, Tipo_visitas_idTipo_visitas, guia_idguia FROM Reserva_Tipo_Visita;
+-- Agrego a jPerez a Cordoba
+ALTER ROLE CORDOBA ADD MEMBER jPerez;
+-- Deniego ver el campo
+DENY ALL ON Reserva_Tipo_Visita(arancel_por_alumno) TO jPerez;
 
--- Conceder acceso a la vista al usuario jPerez
-GRANT SELECT ON vista_sin_arancel TO jPerez;
-
-/*EJERCICIO 14*/
+/*EJERCICIO 14*/ --! Chequear de acá para abajo
 CREATE ROLE ADM;
-GRANT ALL PRIVILEGES ON jurassicPark TO ADM;
+GRANT CONTROL ON DATABASE::jurassicPark TO ADM;
 
 /*EJERCICIO 15*/
 ALTER ROLE ADM ADD MEMBER aFernandez;
 
 -- Denegar el permiso para realizar backups sobre la base de datos
-REVOKE BACKUP ON jurassicPark FROM aFernandez;
+DENY BACKUP DATABASE ON DATABASE::jurassicPark TO aFernandez;
 
--- Denegar el permiso para realizar backups sobre el log de transacciones (si el DBMS lo soporta)
-REVOKE BACKUP FROM aFernandez;
-
-
+-- Denegar el permiso para realizar backups sobre el log de transacciones
+DENY BACKUP LOG ON DATABASE::jurassicPark TO aFernandez;
