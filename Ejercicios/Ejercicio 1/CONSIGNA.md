@@ -31,7 +31,7 @@
 	
 	15.	Establecer clave primaria para Email_Escuela
 	
-	16.	Establecer que los nombres y apellidos de los guias no tengan valores nulos. nulos.
+	16.	Establecer que los nombres y apellidos de los guias no tengan valores nulos.
 	
 	17.	Establecer que no se repita la calle y la altura de las escuelas.
 ## Diagrama de referencia
