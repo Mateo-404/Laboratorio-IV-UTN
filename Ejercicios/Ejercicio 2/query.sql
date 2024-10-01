@@ -53,7 +53,7 @@ ALTER ROLE CORDOBA ADD MEMBER jPerez;
 -- Deniego ver el campo
 DENY ALL ON Reserva_Tipo_Visita(arancel_por_alumno) TO jPerez;
 
-/*EJERCICIO 14*/ --! Chequear de acá para abajo
+/*EJERCICIO 14*/
 CREATE ROLE ADM;
 GRANT CONTROL ON DATABASE::jurassicPark TO ADM;
 
