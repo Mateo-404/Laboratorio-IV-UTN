@@ -2,6 +2,9 @@
 
 Este repositorio contiene ejercicios realizados de la materia Laboratorio IV de la UTN FRRa. Los ejercicios están enfocados en la creación y manipulación de bases de datos con el lenguaje SQL.
 
+## Diagrama Utilizado
+![Diagrama Utilizado](diagramaJurasicPark.png)
+
 ## Cómo usar este repositorio
 
 1. Clona el repositorio en tu máquina local.

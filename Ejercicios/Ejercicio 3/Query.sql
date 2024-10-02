@@ -56,4 +56,42 @@ USE jurassicPark;
 -- <-- VARIOS -->
 	-- 17
 	INSERT Guia(nombre, apellido) VALUES ('Pedro', 'Sanchez'); -- El atributo `idguia` es autoincremental
-	-- 18
+	-- 18 (???)
+	-- Hay 2 formas, una es modificar la tabla para que la columna idTipo_Visitas sea incremental, la otra es:
+	-- Obtener el maximo valor
+	SELECT MAX(idTipo_visitas) FROM Tipo_Visita;
+	-- Para luego ingresar el valor manualmente
+	INSERT INTO Tipo_Visita(idTipo_visitas, descripcion, arancel_por_alumno) VALUES (6, 'alumnos de la UTN', 199);
+	-- 19
+	-- Creación de la tabla donde se insertarán los datos viejos
+	CREATE TABLE Escuela2(
+		idEscuela2 INT PRIMARY KEY,
+		domicilio VARCHAR(45),
+		nombre VARCHAR(45),
+		email VARCHAR(45),
+		codigo_distrito_escolar INT FOREIGN KEY REFERENCES Distrito_Escolar(CP),
+		calle_escuela VARCHAR(45),
+		altura_escuela VARCHAR(45)
+	);
+	-- Inserto los datos viejos
+	INSERT INTO Escuela2 SELECT * FROM Escuela;
+	-- Incremento de ID
+	UPDATE Escuela2 SET idEscuela2 =+ 1;
+	-- Elimino datos de la tabla vieja
+	DELETE FROM Escuela;
+	-- Inserto los datos ACTUALIZADOS a la tabla vieja
+	INSERT INTO Escuela SELECT * FROM Escuela2;
+	
+	-- 20
+	UPDATE Telefono_Escuela SET codigo_area = CONCAT(9, codigo_area);
+	-- 21
+	UPDATE Reserva SET dia = DAY(dia) + 1;
+	-- 22
+	SELECT idReserva, MAX(dia), hora, Escuela_idEscuela FROM Reserva;
+	-- 23
+	SELECT apellido FROM Guia GROUP BY apellido HAVING COUNT(*) > 1;
+	-- 24
+	SELECT dia, COUNT(*) AS CantReservas FROM Reserva GROUP BY dia;
+	-- 25 (???)
+	-- 26
+	SELECT * FROM Reserva_Tipo_Visita GROUP BY guia_idguia HAVING COUNT(*) > 3;
