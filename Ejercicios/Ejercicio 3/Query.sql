@@ -12,15 +12,15 @@ USE jurassicPark;
 	INSERT INTO Guia(nombre, guia_idguia, apellido)
 	VALUES ('Mateo', NULL, 'Gariboglio'); -- No coloco idguia porque se incrementa automáticamente
 
-	-- 3 (???)
+	-- 3
 	INSERT INTO Escuela(idEscuela, Nombre, domicilio)
 	VALUES (14, 'Mario Vecchioli', 'Bv Sta fe 1997');
 
-	-- 4 (???)
+	-- 4
 	-- Borrar todos los telefonos
 	DELETE FROM Telefono_Escuela;
 	-- Insertar los nuevos telefonos
-	INSERT INTO Telefono_Escuela(codigo_area, Escuela_idEscuela) SELECT 1111, idEscuela FROM Escuela; -- Ojo con la PK
+	INSERT INTO Telefono_Escuela(codigo_area, Escuela_idEscuela) SELECT 1111, idEscuela FROM Escuela; -- La pk estaria compuesta solo por idEscuela
 
 -- <-- UPDATE --> (Sin chequear)
 	-- 5
@@ -48,20 +48,16 @@ USE jurassicPark;
 	SELECT SUM(Cantidad_alumnos_reservado) FROM Reserva_Tipo_Visita;
 	-- 14
 	SELECT * FROM Reserva_Tipo_Visita WHERE Cantidad_alumnos_reservado > 20;
-	-- 15 ¡Arreglar!
-/*	SELECT * FROM Reserva_Tipo_Visita RTV, Reserva R WHERE RTV.Cantidad_Alumnos_Reales = 0 AND 5 < ; */
+	-- 15
+	SELECT * FROM Reserva_Tipo_Visita WHERE Cantidad_alumnos_reservado - Cantidad_Alumnos_Reales > 5;
 	-- 16
 	SELECT DISTINCT  COUNT(Escuela_idEscuela) FROM Reserva WHERE dia > '2018-06-30';
 
 -- <-- VARIOS -->
 	-- 17
 	INSERT Guia(nombre, apellido) VALUES ('Pedro', 'Sanchez'); -- El atributo `idguia` es autoincremental
-	-- 18 (???)
-	-- Hay 2 formas, una es modificar la tabla para que la columna idTipo_Visitas sea incremental, la otra es:
-	-- Obtener el maximo valor
-	SELECT MAX(idTipo_visitas) FROM Tipo_Visita;
-	-- Para luego ingresar el valor manualmente
-	INSERT INTO Tipo_Visita(idTipo_visitas, descripcion, arancel_por_alumno) VALUES (6, 'alumnos de la UTN', 199);
+	-- 18 
+	INSERT INTO Tipo_Visita(descripcion, arancel_por_alumno) VALUES ('alumnos de la UTN', 199);
 	-- 19
 	-- Creación de la tabla donde se insertarán los datos viejos
 	CREATE TABLE Escuela2(
@@ -76,7 +72,7 @@ USE jurassicPark;
 	-- Inserto los datos viejos
 	INSERT INTO Escuela2 SELECT * FROM Escuela;
 	-- Incremento de ID
-	UPDATE Escuela2 SET idEscuela2 =+ 1;
+	UPDATE Escuela2 SET idEscuela2 = idEscuela2 + 1;
 	-- Elimino datos de la tabla vieja
 	DELETE FROM Escuela;
 	-- Inserto los datos ACTUALIZADOS a la tabla vieja
@@ -85,13 +81,14 @@ USE jurassicPark;
 	-- 20
 	UPDATE Telefono_Escuela SET codigo_area = CONCAT(9, codigo_area);
 	-- 21
-	UPDATE Reserva SET dia = DAY(dia) + 1;
+	UPDATE Reserva SET dia = DATEADD(DAY, 1, dia);
 	-- 22
-	SELECT idReserva, MAX(dia), hora, Escuela_idEscuela FROM Reserva;
+	SELECT TOP 1 * FROM Reserva ORDER BY dia, hora DESC;
 	-- 23
 	SELECT apellido FROM Guia GROUP BY apellido HAVING COUNT(*) > 1;
 	-- 24
 	SELECT dia, COUNT(*) AS CantReservas FROM Reserva GROUP BY dia;
-	-- 25 (???)
+	-- 25
+	SELECT * FROM Reserva_Tipo_Visita WHERE Cantidad_alumnos_reservado - Cantidad_Alumnos_Reales > 5;
 	-- 26
 	SELECT * FROM Reserva_Tipo_Visita GROUP BY guia_idguia HAVING COUNT(*) > 3;
