@@ -51,13 +51,13 @@ USE jurassicPark;
 	-- 15
 	SELECT * FROM Reserva_Tipo_Visita WHERE Cantidad_alumnos_reservado - Cantidad_Alumnos_Reales > 5;
 	-- 16
-	SELECT DISTINCT  COUNT(Escuela_idEscuela) FROM Reserva WHERE dia > '2018-06-30';
+	SELECT DISTINCT COUNT(Escuela_idEscuela) FROM Reserva WHERE dia > '2018-06-30';
 
 -- <-- VARIOS -->
 	-- 17
-	INSERT Guia(nombre, apellido) VALUES ('Pedro', 'Sanchez'); -- El atributo `idguia` es autoincremental
+	INSERT Guia(idguia, nombre, apellido) VALUES ((SELECT MAX(idguia) + 1 FROM Guia), 'Pedro', 'Sanchez'); -- El atributo `idguia` es autoincremental
 	-- 18 
-	INSERT INTO Tipo_Visita(descripcion, arancel_por_alumno) VALUES ('alumnos de la UTN', 199);
+	INSERT INTO Tipo_Visita(idTipo_visitas, descripcion, arancel_por_alumno) VALUES ((SELECT TOP 1 (idTipo_visitas) + 1 FROM Tipo_Visita), 'alumnos de la UTN', 199); --Top 1 y le sumas 1
 	-- 19
 	-- Creación de la tabla donde se insertarán los datos viejos
 	CREATE TABLE Escuela2(
@@ -89,6 +89,6 @@ USE jurassicPark;
 	-- 24
 	SELECT dia, COUNT(*) AS CantReservas FROM Reserva GROUP BY dia;
 	-- 25
-	SELECT * FROM Reserva_Tipo_Visita WHERE Cantidad_alumnos_reservado - Cantidad_Alumnos_Reales > 5;
+	SELECT AVG(Cantidad_Alumnos_Reales) AS PAlumReales, AVG(Cantidad_alumnos_reservado) AS PAlumReservados, (AVG(Cantidad_Alumnos_Reales)-AVG(Cantidad_alumnos_reservado)) AS Diferencia FROM Reserva_Tipo_Visita;
 	-- 26
 	SELECT * FROM Reserva_Tipo_Visita GROUP BY guia_idguia HAVING COUNT(*) > 3;
