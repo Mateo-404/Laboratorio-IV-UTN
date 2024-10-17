@@ -1,4 +1,4 @@
-# EJERCICIOS Guía 4
+ # EJERCICIOS Guía 4
 ## Consultas Multitabla
 
 1.	Listar las escuelas cuyos domicilios sean de calles que empiecen con `A`, indicando nombre, domicilio y teléfono. Hacer una versión en la que aparezcan sólo las que tienen teléfono, y hacer otra en la que aparezca solo las escuelas con domicilio en calles que empiecen con A y que no tienen ningún teléfono.
