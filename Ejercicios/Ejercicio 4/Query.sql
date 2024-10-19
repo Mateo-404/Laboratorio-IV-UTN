@@ -91,7 +91,7 @@ USE jurassicPark;
 	GROUP BY e.Nombre
 	HAVING SUM(rtv.Cantidad_Alumnos_Reales) = SUM(rtv.Cantidad_alumnos_reservado);
 
-	-- 13 (???)
+	-- 13
 	(SELECT e.Nombre
 	FROM Escuela e
 	JOIN Reserva r on r.Escuela_idEscuela = e.idEscuela
@@ -99,7 +99,8 @@ USE jurassicPark;
 	UNION
 	(SELECT g.apellido
 	FROM Guia g
-	WHERE g.apellido LIKE 'V%');
+	WHERE g.apellido LIKE 'V%')
+	ORDER BY Nombre DESC;
 
 	-- 14
 	SELECT e.Nombre , t.cod_area, t.nro
@@ -125,10 +126,10 @@ USE jurassicPark;
 		totalAlumnosReales INT
 	);
 
-	INSERT INTO Guia_Performance VALUES (
+	INSERT INTO Guia_Performance(idguia, nombre, totalAlumnosReservado, totalAlumnosReales)
 	SELECT g.idguia, g.nombre, SUM(rtv.Cantidad_alumnos_reservado), SUM(rtv.Cantidad_Alumnos_Reales)
 	FROM Reserva r
 	JOIN Reserva_Tipo_Visita rtv On r.idReserva = rtv.Reserva_idReserva
 	JOIN Guia g ON g.idguia = rtv.guia_idguia
 	WHERE YEAR(R.dia) = 2023
-	GROUP BY g.idguia, g.nombre );
+	GROUP BY g.idguia, g.nombre;
