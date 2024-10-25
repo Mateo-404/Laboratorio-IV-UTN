@@ -92,15 +92,20 @@ USE jurassicPark;
 	HAVING SUM(rtv.Cantidad_Alumnos_Reales) = SUM(rtv.Cantidad_alumnos_reservado);
 
 	-- 13
-	(SELECT e.Nombre
+	/*
+	Realizar la Union de las consultas: 
+		- Nombres de las escuelas con reservas antes de las 9:00 hs
+		- Apellidos de los guías cuyos nombres comiencen con `V`
+		- Ordenar el resultado en forma descendente
+	*/
+
+	SELECT e.*, g.apellido
 	FROM Escuela e
 	JOIN Reserva r on r.Escuela_idEscuela = e.idEscuela
-	WHERE r.hora < 9)
-	UNION
-	(SELECT g.apellido
-	FROM Guia g
-	WHERE g.apellido LIKE 'V%')
-	ORDER BY Nombre DESC;
+	FULL JOIN Guia g ON 1 = 0 -- Esto asegura que no hay ninguna relación directa entre las escuelas y los guías. Asegurando que muestra null cuando la columna no tiene relacion con la otra tabla
+	WHERE r.hora < 9
+	AND g.apellido LIKE 'V%'
+	ORDER BY apellido DESC;
 
 	-- 14
 	SELECT e.Nombre , t.cod_area, t.nro
