@@ -8,7 +8,7 @@ WHERE guia_idguia IN (SELECT idguia
 						FROM Guia
 						WHERE nombre = 'Cristina Zaluzi');
 
--- 2 Listar los cÃ³digos de escuelas que poseen una cantidad total real de alumnos que visitaron el parque, mayor a 400.
+-- 2 Listar los códigos de escuelas que poseen una cantidad total real de alumnos que visitaron el parque, mayor a 400.
 SELECT r.Escuela_idEscuela AS Codigo_Escuela
 FROM Reservas r
 JOIN Reserva_Tipo_Visita rtv ON r.idReserva = rtv.idReserva
@@ -34,7 +34,7 @@ GROUP BY g.idguia, g.nombre, g.apellido
 HAVING COUNT(DISTINCT rtv.idTipo_visita ) > 10
 AND SUM(rtv.Cantidad_Alumnos_Reales) > 200;
 
--- 5. Listar las escuelas que poseen mÃ¡s de 4 reservas con mÃ¡s de 3 tipos de visitas para cada reserva.
+-- 5. Listar las escuelas que poseen más de 4 reservas con más de 3 tipos de visitas para cada reserva.
 
 -- 7. Listar las reservas donde todos los tipos de visita tienen la cantidad real de alumnos mayor en un 20% adicional a la cantidad reservada.
 
@@ -50,7 +50,7 @@ FROM Reserva_Tipo_Visita rtv2
 WHERE rtv2.FK_guia_idguia = g.idguia 
 );
 
--- 8.	Listar el nombre y el cÃ³digo de aquellas escuelas que hayan asistido el dÃ­a en que se registrÃ³ la mayor cantidad de alumnos reales.
+-- 8.	Listar el nombre y el código de aquellas escuelas que hayan asistido el día en que se registró la mayor cantidad de alumnos reales.
 -- Supongo que mas de 1 dia tienen la misma cantidad de Alumnos Reales maxima
 
 SELECT e.idEscuela, e.Nombre
@@ -62,9 +62,17 @@ WHERE e.idEscuela IN (SELECT DISTINCT r.Escuela_idEscuela
 														FROM Reserva_Tipo_Visita
 														ORDER BY Cantidad_Alumnos_Reales DESC))
 
--- 9. Listar el cÃ³digo y nombre de las escuelas cuya fecha de reserva sea igual a la primera fecha de reserva realizada.
+-- 9. Listar el código y nombre de las escuelas cuya fecha de reserva sea igual a la primera fecha de reserva realizada.
+SELECT e.codigo_distrito_escolar, e.Nombre
+FROM Escuela e
+WHERE e.idEscuela in (
+	SELECT DISTINCT r.Escuela_idEscuela
+	FROM Reserva r
+	WHERE r.dia = (
+		SELECT MIN(dia)
+		FROM Reserva));
 
--- 10.	Listar las escuelas que visitaron entre los aÃ±os 2001 y en el 2002.
+-- 10.	Listar las escuelas que visitaron entre los años 2001 y en el 2002.
 
 SELECT DISTINCT idEscuela, Nombre, codigo_distrito_escolar
 FROM Escuela 
@@ -78,9 +86,30 @@ WHERE idEscuela IN (SELECT Escuela_idEscuela
 													FROM Reserva
 													WHERE YEAR(dia) = '2002'));
 
--- 11. Listar los guÃ­as que tuvieron mÃ¡s de 3 escuelas diferentes y una cantidad total real de alumnos mayor a 200.
+-- 11. Listar los guías que tuvieron más de 3 escuelas diferentes y una cantidad total real de alumnos mayor a 200.
+-- 11. Listar los guías que tuvieron más de 3 escuelas diferentes y una cantidad total real de alumnos mayor a 200.
+SELECT DISTINCT g.idguia
+FROM Guia g
+WHERE 
+    -- Subconsulta para guías con más de 200 alumnos
+    g.idguia IN (
+        SELECT rtv.guia_idguia
+        FROM Reserva_Tipo_Visita rtv
+        GROUP BY rtv.guia_idguia
+        HAVING SUM(rtv.Cantidad_Alumnos_Reales) > 200
+    )
+    AND 
+    -- Subconsulta para guías con más de 3 escuelas distintas
+    g.idguia IN (
+        SELECT rtv.guia_idguia
+        FROM Reserva r
+        JOIN Reserva_Tipo_Visita rtv ON rtv.Reserva_idReserva = r.idReserva
+        GROUP BY rtv.guia_idguia
+        HAVING COUNT(DISTINCT r.Escuela_idEscuela) > 3
+    );
 
--- 12.	Listar los nombres y cÃ³digos de escuelas con gasto total de todas las visitas mayor a $1900.
+
+-- 12.	Listar los nombres y códigos de escuelas con gasto total de todas las visitas mayor a $1900.
 
 SELECT DISTINCT e.idEscuela, e.codigo_distrito_escolar, e.Nombre
 FROM Escuela e
@@ -89,4 +118,4 @@ WHERE r.idReserva IN (SELECT DISTINCT idReserva
 						FROM Reserva_Tipo_Visita
 						WHERE arancel_por_alumno = 1900);
 						
--- 13. Listar los guÃ­as que hayan tenido en solo un tipo de visita de una reserva en particular por lo menos el 45% del total de alumnos totales que esa persona atendiÃ³.
+-- 13. Listar los guías que hayan tenido en solo un tipo de visita de una reserva en particular por lo menos el 45% del total de alumnos totales que esa persona atendió.
