@@ -35,20 +35,32 @@ HAVING COUNT(DISTINCT rtv.idTipo_visita ) > 10
 AND SUM(rtv.Cantidad_Alumnos_Reales) > 200;
 
 -- 5. Listar las escuelas que poseen más de 4 reservas con más de 3 tipos de visitas para cada reserva.
-
--- 7. Listar las reservas donde todos los tipos de visita tienen la cantidad real de alumnos mayor en un 20% adicional a la cantidad reservada.
+SELECT e.nombre AS nombre_escuela
+FROM Escuelas e
+JOIN Reservas r ON e.escuela_id = r.escuela_id
+JOIN ReservaDetalle rd ON r.reserva_id = rd.reserva_id
+GROUP BY e.escuela_id, e.nombre
+HAVING COUNT(DISTINCT r.reserva_id) > 4
+   AND COUNT(DISTINCT rd.tipo_visita_id) > 3;
 
 -- 6
-SELECT g.idguia. g.nombre, g.apellido
+SELECT g.idguia, g.nombre, g.apellido
 FROM Guia g 
-JOIN Reserva_tipo_Visita rtv ON g.idguia = rtv.FK._guia_idguia
-JOIN Reserva r ON r.idReserva = rtv.idReserva
-GROUP BY  g.idguia. g.nombre, g.apellido,  rtv.Cantidad_Alumnos_Reales
+JOIN Reserva_tipo_Visita rtv ON g.idguia = rtv.guia_idguia
+JOIN Reserva r ON r.idReserva = rtv.Reserva_idReserva
+GROUP BY  g.idguia, g.nombre, g.apellido,  rtv.Cantidad_Alumnos_Reales
 HAVING rtv.Cantidad_Alumnos_Reales >= 0.4 * ( 
-SELECT SUM(rtv2.Cantidad_Alumnos_Reales) 
-FROM Reserva_Tipo_Visita rtv2 
-WHERE rtv2.FK_guia_idguia = g.idguia 
+	SELECT SUM(rtv2.Cantidad_Alumnos_Reales) 
+	FROM Reserva_Tipo_Visita rtv2 
+	WHERE rtv2.guia_idguia = g.idguia 
 );
+
+-- 7. Listar las reservas donde todos los tipos de visita tienen la cantidad real de alumnos mayor en un 20% adicional a la cantidad reservada.
+SELECT r.reserva_id
+FROM Reservas r
+JOIN ReservaDetalle rd ON r.reserva_id = rd.reserva_id
+GROUP BY r.reserva_id
+HAVING MIN(rd.cantidad_real) > 1.2 * MIN(rd.cantidad_reservada);
 
 -- 8.	Listar el nombre y el código de aquellas escuelas que hayan asistido el día en que se registró la mayor cantidad de alumnos reales.
 -- Supongo que mas de 1 dia tienen la misma cantidad de Alumnos Reales maxima
@@ -73,7 +85,6 @@ WHERE e.idEscuela in (
 		FROM Reserva));
 
 -- 10.	Listar las escuelas que visitaron entre los años 2001 y en el 2002.
-
 SELECT DISTINCT idEscuela, Nombre, codigo_distrito_escolar
 FROM Escuela 
 WHERE idEscuela IN (SELECT Escuela_idEscuela
@@ -86,7 +97,7 @@ WHERE idEscuela IN (SELECT Escuela_idEscuela
 													FROM Reserva
 													WHERE YEAR(dia) = '2002'));
 
--- 11. Listar los guías que tuvieron más de 3 escuelas diferentes y una cantidad total real de alumnos mayor a 200.
+
 -- 11. Listar los guías que tuvieron más de 3 escuelas diferentes y una cantidad total real de alumnos mayor a 200.
 SELECT DISTINCT g.idguia
 FROM Guia g
@@ -110,7 +121,6 @@ WHERE
 
 
 -- 12.	Listar los nombres y códigos de escuelas con gasto total de todas las visitas mayor a $1900.
-
 SELECT DISTINCT e.idEscuela, e.codigo_distrito_escolar, e.Nombre
 FROM Escuela e
 JOIN Reserva r ON e.idEscuela = r.Escuela_idEscuela 
@@ -119,3 +129,22 @@ WHERE r.idReserva IN (SELECT DISTINCT idReserva
 						WHERE arancel_por_alumno = 1900);
 						
 -- 13. Listar los guías que hayan tenido en solo un tipo de visita de una reserva en particular por lo menos el 45% del total de alumnos totales que esa persona atendió.
+Select G.nombre, G.apellido
+From guia as G
+where G.idguia in (
+    Select RTV1.guia_idguia as guia,
+           sum(RTV1.cantidad_alumnos_reales) * 0.45
+    From Reserva_tipo_visita as RTV1
+    Inner Join Reserva as R
+    on RTV1.reserva_idreserva = R.idReserva
+    where Year(R.dia) = '2024'
+    Group by RTV1.guia_idguia
+    Having sum(RTV1.cantidad_alumnos_reales) * 0.45 > any (
+        Select RTV2.cantidad_alumnos_reales
+        From Reserva_tipo_visita as RTV2
+        Inner Join Reserva as R2
+        on RTV2.reserva_idreserva = R2.idReserva
+        where Year(dia) = '2024'
+        and RTV2.guia_idguia = RTV1.guia_idguia
+    )
+)
